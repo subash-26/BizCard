@@ -63,29 +63,27 @@ selected = option_menu(None, ["Home","Upload & Extract","Modify"],
 
 # TABLE CREATION
 mycursor.execute('''CREATE TABLE IF NOT EXISTS card_data
-                   (id INTEGER PRIMARY KEY AUTO_INCREMENT,
-                    company_name TEXT,
-                    card_holder TEXT,
-                    designation TEXT,
+                   (company_name VARCHAR(50),
+                    card_holder VARCHAR(50),
+                    designation VARCHAR(50),
                     mobile_number VARCHAR(50),
-                    email TEXT,
-                    website TEXT,
-                    area TEXT,
-                    city TEXT,
-                    state TEXT,
-                    pin_code VARCHAR(10),
-                    image LONGBLOB
+                    email VARCHAR(50),
+                    website VARCHAR(50),
+                    area VARCHAR(50),
+                    city VARCHAR(50),
+                    state VARCHAR(50),
+                    pin_code VARCHAR(10)
                     )''')
 
 # HOME MENU
 if selected == "Home":
     col1 , col2 = st.columns(2)
     with col1:
-        st.image(Image.open(r"C:\Users\subash\Pictures\vlcsnap-2023-09-03-19h42m46s159.png"),width=500)
-        st.markdown("## :green[**Technologies Used :**] Python,easy OCR, Streamlit, SQL, Pandas")
+        st.image(Image.open(r"C:\Users\subash\OneDrive\Guvi\Project\BizCard\bizcard.jpg"),width=500)
+        st.markdown("Biz Card is an initiative to share the business information on various mediums (online and offline). Anyone could afford to make this card and share")
     with col2:
-       st.write("## :green[**About :**] Bizcard is a Python application designed to extract information from business cards.")
-       st.write('## The main purpose of Bizcard is to automate the process of extracting key details from business card images, such as the name, designation, company, contact information, and other relevant data. By leveraging the power of OCR (Optical Character Recognition) provided by EasyOCR, Bizcard is able to extract text from the images.')
+       st.write("## :green[**About :**] Business cards are cards bearing business information about a company or individual.")
+       st.write('## Why Use a Business Card? A business card is a highly personal form of marketing, and does exactly what you need it to. Business cards serve the key purpose of marketing your business and getting your key contact information into your client hands… all in a matter of seconds. Fundamental to the value of the business card, is its portability.')
 
 # UPLOAD AND EXTRACT MENU
 
@@ -159,8 +157,7 @@ if selected == "Upload & Extract":
             with open(file, 'rb') as file:
                 binaryData = file.read()
             return binaryData
-
-
+        
         data = {"company_name": [],
                 "card_holder": [],
                 "designation": [],
@@ -170,13 +167,13 @@ if selected == "Upload & Extract":
                 "area": [],
                 "city": [],
                 "state": [],
-                "pin_code": [],
-                "image": img_to_binary(saved_img)
-                }
+                "pin_code": []
+               }
 
 
-        def get_data(res):
-            for ind, i in enumerate(res):
+        def get_data(result):
+            for ind, i in enumerate(result):
+
 
                 # To get WEBSITE_URL
                 if "www " in i.lower() or "www." in i.lower():
@@ -195,9 +192,9 @@ if selected == "Upload & Extract":
                         data["mobile_number"] = " & ".join(data["mobile_number"])
 
                 # To get COMPANY NAME
-                elif ind == len(res) - 1:
+                elif ind == len(res)-1:
                     data["company_name"].append(i)
-
+                    
                 # To get CARD HOLDER NAME
                 elif ind == 0:
                     data["card_holder"].append(i)
@@ -239,24 +236,20 @@ if selected == "Upload & Extract":
                     data["pin_code"].append(i[10:])
 
 
+
+
+
         get_data(result)
-
-
-        # FUNCTION TO CREATE DATAFRAME
-        def create_df(data):
-            df = pd.DataFrame(data)
-            return df
-
-
-        df = create_df(data)
+        st.write(data)
+        df = pd.DataFrame(data)
         st.success("### Data Extracted!")
         st.write(df)
 
         if st.button("Upload to Database"):
             for i, row in df.iterrows():
                 # here %S means string values
-                sql = """INSERT INTO card_data(company_name,card_holder,designation,mobile_number,email,website,area,city,state,pin_code,image)
-                         VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)"""
+                sql = """INSERT INTO card_data(company_name,card_holder,designation,mobile_number,email,website,area,city,state,pin_code)
+                         VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)"""
                 mycursor.execute(sql, tuple(row))
                 # the connection is not auto committed by default, so we must commit to save our changes
                 mydb.commit()
