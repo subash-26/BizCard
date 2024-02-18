@@ -171,9 +171,8 @@ if selected == "Upload & Extract":
                }
 
 
-        def get_data(result):
-            for ind, i in enumerate(result):
-
+        def get_data(res):
+            for ind, i in enumerate(res):
 
                 # To get WEBSITE_URL
                 if "www " in i.lower() or "www." in i.lower():
@@ -240,7 +239,7 @@ if selected == "Upload & Extract":
 
 
         get_data(result)
-        st.write(data)
+        #st.write(data)
         df = pd.DataFrame(data)
         st.success("### Data Extracted!")
         st.write(df)
