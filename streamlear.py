@@ -254,6 +254,8 @@ if selected == "Upload & Extract":
                 # the connection is not auto committed by default, so we must commit to save our changes
                 mydb.commit()
                 st.success("#### Uploaded to database successfully!")
+                st.snow()
+                st.balloons()
 
         if st.button(":blue[View updated data]"):
             mycursor.execute("select company_name,card_holder,designation,mobile_number,email,website,area,city,state,pin_code from card_data")
